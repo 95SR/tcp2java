@@ -16,21 +16,57 @@ public class SocketManager {
     }
 
     public void removeSocket(ServerThread thread){
-
+        
+        sendMessagetoAll(thread.userName + " has left the chat");
+        
+        clientSockets.remove(thread);
     }
 
     public  void sendMessage(ServerThread thread, String message){
+       
         for (ServerThread item : clientSockets) {
             if(!item.equals(thread)){
-                try {
-                    item.bw.write(message);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                
+               
+                    item.pw.println(thread.userName+ ": " + message);
+                    
+                
             }
         }
 
+    }
+
+      public  void sendMessagetoAll( String message){
+       
+        for (ServerThread item : clientSockets) {
+        
+                
+               
+                    item.pw.println( "SERVER: " + message);
+                    
+                
+        
+        }
+
+    }
+
+    public void closeSocket(){
+        System.out.println("trying to close client socket");
+        for (ServerThread item : clientSockets) {
+            try {
+                 
+                item.pw.close();
+                item.br.close();
+                
+                
+            
+                
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            
+        }
     }
 
 
